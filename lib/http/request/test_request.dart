@@ -3,7 +3,7 @@ import 'package:yut/http/request/base_request.dart';
 class TestRequest extends BaseRequest {
   @override
   HttpMethod httpMethod() {
-    throw HttpMethod.GET;
+    return HttpMethod.GET;
   }
 
   @override
