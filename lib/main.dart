@@ -38,18 +38,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
       TestRequest request = TestRequest();
-      request.add("aa", "dddd").add("bb", "ccc");
+      request.add("aa", "dddd").add("bb", "ccc").add("requestParams", "kkkkkk");
       try {
         var result = await HiNet.getInstance().fire(request);
         print(result);
       } on NeedAuth catch (e) {
-        print("NeedAuth error: ${e}");
+        print("NeedAuth error: ");
       }on NeedLogin catch (e) {
-        print("NeedLogin error: ${e}");
+        print("NeedLogin error: ");
       }on HiNetError catch (e) {
-        print("HiNetError error: ${e}");
-      }catch (e) {
-        print("error: ${e}");
+        print("HiNetError error: ");
+      } catch (e) {
+        print("error: ");
       }
 
       Log.info("hello world",StackTrace.current);

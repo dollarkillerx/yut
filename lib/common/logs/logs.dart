@@ -1,4 +1,5 @@
 class Log {
+  // Log.info("hello world",StackTrace.current);
   static info(String message, [StackTrace? stackTrace]) {
     log('INFO', message, stackTrace);
   }

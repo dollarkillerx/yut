@@ -13,6 +13,6 @@ class TestRequest extends BaseRequest {
 
   @override
   String path() {
-    return "/";
+    return "uapi/test/test";
   }
 }

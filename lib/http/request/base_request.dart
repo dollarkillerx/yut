@@ -3,7 +3,11 @@ enum HttpMethod { GET, POST, DELETE }
 // https://api.devio.org/uapi/swagger-ui.html
 
 abstract class BaseRequest {
-  Map<String, dynamic>? queryParameters;
+  Map<String, dynamic> queryParameters = {}; // query
+  Map<String, String> params = {}; // data
+  Map<String, dynamic> header = {}; // header
+  bool neeLogin();
+
   var userHttps = true;
 
   String authority() {
@@ -34,18 +38,14 @@ abstract class BaseRequest {
     return uri.toString();
   }
 
-  bool neeLogin();
-
   // add params
-  Map<String,String> params = {};
-  BaseRequest add(String k,Object v) {
+  BaseRequest add(String k, Object v) {
     params[k] = v.toString();
     return this;
   }
 
   // add header
-  Map<String, dynamic> header = {};
-  BaseRequest addHeader(String k,Object v) {
+  BaseRequest addHeader(String k, Object v) {
     header[k] = v.toString();
     return this;
   }
