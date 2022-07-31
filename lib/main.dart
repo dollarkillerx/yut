@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:yut/common/local_storage/hi_cache.dart';
 import 'package:yut/http/core/hi_error.dart';
 import 'package:yut/http/core/hi_net.dart';
+import 'package:yut/http/dao/login.dart';
 import 'package:yut/http/request/test_request.dart';
 import 'common/logs/logs.dart';
 
@@ -37,25 +39,17 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-      TestRequest request = TestRequest();
-      request.add("aa", "dddd").add("bb", "ccc").add("requestParams", "kkkkkk");
-      try {
-        var result = await HiNet.getInstance().fire(request);
-        print(result);
-      } on NeedAuth catch (e) {
-        print("NeedAuth error: ");
-      }on NeedLogin catch (e) {
-        print("NeedLogin error: ");
-      }on HiNetError catch (e) {
-        print("HiNetError error: ");
-      } catch (e) {
-        print("error: ");
-      }
-
-      Log.info("hello world",StackTrace.current);
+      
+    await test2();
     setState(() {
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    HiCache.preInit();
+    super.initState();
   }
 
   @override
@@ -84,5 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  test2() async {
+   var r = await LoginDao.login("WorldLink", "WorldLink");
+   print(r.toString());
   }
 }

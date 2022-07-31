@@ -1,36 +1,32 @@
-import 'package:dio/dio.dart';
-import 'package:yut/http/core/hi_error.dart';
-import 'package:yut/http/core/hi_net_adapter.dart';
 import 'package:yut/http/request/base_request.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'hi_error.dart';
+import 'hi_net_adapter.dart';
 
-class DioAdapter extends HiNetAdapter {
+class HttpAdapter extends HiNetAdapter {
   @override
   Future<HiNetResponse<T>> send<T>(BaseRequest request) async {
-    var options = Options(headers: request.header);
-    Response? response;
+    http.Response? response;
     var error;
 
     try {
       switch (request.httpMethod()) {
         case HttpMethod.GET:
-          response = await Dio().get(request.url(), options: options);
+          response = await http.get(request.uri(),headers: request.header);
           break;
         case HttpMethod.POST:
-          response = await Dio().post(
-              request.url(), data: request.params, options: options);
+          response = await http.post(request.uri(),body: request.params,headers: request.header,);
           break;
         case HttpMethod.DELETE:
-          response = await Dio().delete(
-              request.url(), data: request.params, options: options);
+          response = await http.delete(request.uri(),body: request.params,headers: request.header);
           break;
       }
-    } on DioError catch (e) {
+    }on http.ClientException catch(e) {
       error = e;
-      response = e.response;
     } catch(e) {
       error = e;
     }
-
 
     if (error != null) {
       throw HiNetError(response?.statusCode ?? -1, error.toString(), data: await buildRes(response, request));
@@ -40,14 +36,12 @@ class DioAdapter extends HiNetAdapter {
   }
 
   ///构建HiNetResponse
-  Future<HiNetResponse<T>> buildRes<T>(Response? response,
+  Future<HiNetResponse<T>> buildRes<T>(http.Response? response,
       BaseRequest request) {
     return Future.value(HiNetResponse(
-      //?.防止response为空
-        data: response?.data,
+        data: response != null?convert.jsonDecode(response.body):null,
         request: request,
         statusCode: response?.statusCode ?? 0,
-        statusMessage: response?.statusMessage,
         extra: response));
   }
 }

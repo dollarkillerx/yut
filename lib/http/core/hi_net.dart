@@ -20,6 +20,7 @@ class HiNet {
 
   Future<dynamic?> send<T>(BaseRequest request) async {
     request.addHeader("auth-token", "ZmEtMjAyMS0wNC0xMiAyMToyMjoyMC1mYQ==fa");
+    request.addHeader("course-flag","fa");
 
     if (HiNet._debug) {
       Log.info("Url: ${request.path()}", StackTrace.current);
@@ -59,9 +60,17 @@ class HiNet {
       case 401:
         throw NeedLogin();
       case 403:
-        throw NeedAuth(result.toString(), data: result);
+        if (result != null) {
+          throw NeedAuth(result.toString(), data: result);
+        }else {
+          throw NeedAuth("403", data: result);
+        }
       default:
-        throw HiNetError(status ?? -1, result.toString(), data: result);
+        if (result != null) {
+          throw HiNetError(status ?? -1, result.toString(), data: result);
+        }else {
+          throw HiNetError(status ?? -1, "", data: result);
+        }
     }
   }
 }
