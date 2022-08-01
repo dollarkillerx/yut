@@ -56,31 +56,31 @@ class HiCache {
   }
 
   /// 获取返回为bool的内容
-  Future<bool?> getBool(String key) async {
+  bool? getBool(String key)  {
     bool? value = prefs!.getBool(key);
     return value;
   }
 
   /// 获取返回为double的内容
-  Future<double?> getDouble(String key) async {
+  double? getDouble(String key)  {
     double? value = prefs!.getDouble(key);
     return value;
   }
 
   /// 获取返回为int的内容
-  Future<int?> getInt(String key) async {
+  int? getInt(String key)  {
     int? value = prefs!.getInt(key);
     return value;
   }
 
   /// 获取返回为String的内容
-  Future<String?> getString(String key) async {
+  String? getString(String key)  {
     String? value = prefs!.getString(key);
     return value;
   }
 
   /// 获取返回为StringList的内容
-  Future<List<String>?> getStringList(String key) async {
+  List<String>? getStringList(String key)  {
     List<String>? value = prefs!.getStringList(key);
     return value;
   }

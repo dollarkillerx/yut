@@ -40,6 +40,7 @@ abstract class BaseRequest {
 
     if (neeLogin()) {
       addHeader(LoginDao.BOARDING_PASS, LoginDao.getBoardingPass());
+      Log.info("$header");
     }
 
     query("course-flag", "fa");

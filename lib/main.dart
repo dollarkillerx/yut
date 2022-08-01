@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yut/common/local_storage/hi_cache.dart';
-import 'package:yut/http/core/hi_error.dart';
-import 'package:yut/http/core/hi_net.dart';
 import 'package:yut/http/dao/login.dart';
-import 'package:yut/http/request/test_request.dart';
-import 'common/logs/logs.dart';
+import 'package:yut/http/dao/notice.dart';
 
 void main() {
   runApp(const MyApp());
@@ -83,5 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   test2() async {
    var r = await LoginDao.login("WorldLink", "WorldLink");
    print(r.toString());
+
+   await NoticeDao.notice(0, 0);
   }
 }

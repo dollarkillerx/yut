@@ -7,13 +7,14 @@ class NoticeDao {
     if (pageIndex == 0) {
       pageIndex = 1;
     }
-    if (pageSize>20) {
+    if (pageSize>20 || pageSize <= 0) {
       pageSize = 20;
     }
 
     var request = NoticeRequest();
     request.query("pageIndex", pageIndex);
     request.query("pageSize", pageSize);
+    request.addHeader("asdasd", "asdasd");
     var result = await HiNet.getInstance().fire(request);
     if (result['code'] == 0 && result['data'] != null) {
       Log.info("$result");
