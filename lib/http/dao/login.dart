@@ -26,8 +26,11 @@ class LoginDao {
       request = RegistrationRequest();
       request.query("imoocId", "2317968");
       request.query("orderId", "2207291029356428");
+      request.query("userName", userName);
+      request.query("password", password);
     }
-
+    request.query("course-flag", "fa");
+    request.query("courseFlag", "fa");
     var result = await HiNet.getInstance().fire(request);
     if (result['code'] == 0 && result['data'] != null) {
       // save token

@@ -37,22 +37,20 @@ class HiNet {
     var error;
     try {
       response = await send(request);
-    } on HiNetError catch(e)  {
+    } on HiNetError catch (e) {
       error = e;
       response = e.data;
-      Log.warning("${e.message}", StackTrace.current);
+      Log.warning(e.message);
     } catch (e) {
-      // 其他异常
+      //其它异常
       error = e;
-      Log.warning("$e", StackTrace.current);
+      Log.warning("$e");
     }
-    
     if (response == null) {
-      Log.warning("$error", StackTrace.current);
+      Log.warning(error);
     }
-
     var result = response?.data;
-
+    Log.warning(result);
     var status = response?.statusCode;
     switch (status) {
       case 200:
@@ -60,17 +58,52 @@ class HiNet {
       case 401:
         throw NeedLogin();
       case 403:
-        if (result != null) {
-          throw NeedAuth(result.toString(), data: result);
-        }else {
-          throw NeedAuth("403", data: result);
-        }
+        throw NeedAuth(result.toString(), data: result);
       default:
-        if (result != null) {
-          throw HiNetError(status ?? -1, result.toString(), data: result);
-        }else {
-          throw HiNetError(status ?? -1, "", data: result);
-        }
+        throw HiNetError(status ?? -1, result.toString(), data: result);
     }
+    // return;
+    // HiNetResponse? response;
+    // var error;
+    // try {
+    //   response = await send(request);
+    // } on HiNetError catch(e)  {
+    //   error = e;
+    //   Log.warning("${e.message} $response", StackTrace.current);
+    //   throw HiNetError(response?.statusCode??-1,e.toString(), data: response);
+    // } catch (e) {
+    //   // 其他异常
+    //   error = e;
+    //   print(response.toString());
+    //   Log.warning("$e $response", StackTrace.current);
+    //   throw HiNetError(response?.statusCode??-1,e.toString(), data: response);
+    // }
+    //
+    // if (response == null) {
+    //   Log.warning("$error", StackTrace.current);
+    // }
+    //
+    // var result = response?.data;
+    //
+    // var status = response?.statusCode;
+    // switch (status) {
+    //   case 200:
+    //     return result;
+    //   case 401:
+    //     throw NeedLogin();
+    //   case 403:
+    //     if (result != null) {
+    //       throw NeedAuth(result.toString(), data: result);
+    //     }else {
+    //       throw NeedAuth("403", data: result);
+    //     }
+    //   default:
+    //
+    //     if (result != null) {
+    //       throw HiNetError(status ?? -1, result.toString(), data: result);
+    //     }else {
+    //       throw HiNetError(status ?? -1, "", data: result);
+    //     }
+    // }
   }
 }

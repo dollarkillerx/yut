@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yut/page/registration.dart';
+import 'package:yut/page/login.dart';
 
 import 'common/color/color.dart';
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: white,
       ),
-      home: RegistrationPage(onJumpToLogin: () {  },),
+      home: LoginPage(),
     );
   }
 }

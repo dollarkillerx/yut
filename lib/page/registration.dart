@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:yut/common/dialog/dialog.dart';
-import 'package:yut/common/logs/logs.dart';
 import 'package:yut/http/core/hi_error.dart';
 import 'package:yut/http/dao/login.dart';
 import 'package:yut/widget/appbar.dart';
 import 'package:yut/widget/login_input.dart';
-
 import '../common/utils/strings.dart';
 import '../widget/LOGIN_EFFECT.dart';
+import '../widget/login_button.dart';
 
 class RegistrationPage extends StatefulWidget {
   final VoidCallback onJumpToLogin;
@@ -76,13 +74,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
             Padding(
               padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: _loginButton(),
+              child: LoginButton('注册',
+                  enable: loginEnable, onPressed: checkParams),
             )
+            // Padding(
+            //   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+            //   child: _loginButton(),
+            // )
           ],
         ),
       ),
     );
   }
+
 
   void checkInput() {
     bool enable;
@@ -98,47 +102,94 @@ class _RegistrationPageState extends State<RegistrationPage> {
     });
   }
 
-  _loginButton() {
-    return InkWell(
-      child: Text('Registration'),
-      onTap: () {
-        if (!checkParams()) {
-          MyDialog.Alert(context, "Error", Text("參數錯誤"));
-          return;
-        }
-        if (loginEnable) {
-          _send();
-        } else {
-          MyDialog.Alert(context, "Error", Text("請認真填寫參數"));
-        }
-      },
-    );
-  }
-
-  bool checkParams() {
-    if (password == rePassword) {
-      return true;
-    }
-
-    return false;
-  }
-
-  _send() async {
+  void send() async {
     try {
-      var result = await LoginDao.registration(userName!, password!);
-      if (result["code"] == 0) {
+      var result =
+      await LoginDao.registration(userName!, password!);
+      print(result);
+      if (result['code'] == 0) {
+        print('注册成功');
         if (widget.onJumpToLogin != null) {
           widget.onJumpToLogin();
         }
       } else {
         print(result['msg']);
       }
+    } on NeedAuth catch (e) {
+      print(e);
     } on HiNetError catch (e) {
-      Log.info("$e", StackTrace.current);
-    } catch (e) {
-      Log.info("$e", StackTrace.current);
+      print(e);
     }
-
-    print("no empt");
   }
+
+  void checkParams() {
+    String? tips;
+    if (password != rePassword) {
+      tips = '两次密码不一致';
+    }
+    if (tips != null) {
+      print(tips);
+      return;
+    }
+    send();
+  }
+
+  // void checkInput() {
+  //   bool enable;
+  //   if (isNotEmpty(userName) &&
+  //       isNotEmpty(password) &&
+  //       isNotEmpty(rePassword)) {
+  //     enable = true;
+  //   } else {
+  //     enable = false;
+  //   }
+  //   setState(() {
+  //     loginEnable = enable;
+  //   });
+  // }
+  //
+  // _loginButton() {
+  //   return InkWell(
+  //     child: Text('Registration'),
+  //     onTap: () {
+  //       if (!checkParams()) {
+  //         MyDialog.Alert(context, "Error", Text("參數錯誤"));
+  //         return;
+  //       }
+  //       if (loginEnable) {
+  //         _send();
+  //       } else {
+  //         MyDialog.Alert(context, "Error", Text("請認真填寫參數"));
+  //       }
+  //     },
+  //   );
+  // }
+  //
+  // bool checkParams() {
+  //   if (password == rePassword) {
+  //     return true;
+  //   }
+  //
+  //   return false;
+  // }
+  //
+  // _send() async {
+  //   try {
+  //     var result = await LoginDao.registration(userName!, password!);
+  //     if (result["code"] == 0) {
+  //       if (widget.onJumpToLogin != null) {
+  //         widget.onJumpToLogin();
+  //       }
+  //     } else {
+  //       print(result['msg']);
+  //     }
+  //   } on HiNetError catch (e) {
+  //     print(e);
+  //     // Log.info("$e", StackTrace.current);
+  //   } catch (e) {
+  //     Log.info("$e", StackTrace.current);
+  //   }
+  //
+  //   print("no empt");
+  // }
 }
