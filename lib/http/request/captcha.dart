@@ -1,9 +1,9 @@
 import 'package:yut/http/request/base_request.dart';
 
-class LoginRequest extends BaseRequest {
+class Captcha extends BaseRequest {
   @override
   HttpMethod httpMethod() {
-    return HttpMethod.POST;
+    return HttpMethod.GET;
   }
 
   @override
@@ -13,6 +13,6 @@ class LoginRequest extends BaseRequest {
 
   @override
   String path() {
-    return "api/v1/login";
+    return "api/v1/captcha";
   }
 }

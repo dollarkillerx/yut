@@ -9,6 +9,7 @@ class LoginInput extends StatefulWidget {
   final bool lineStretch; // 线拉伸
   final bool obscureText; // password input
   final TextInputType? keyboardType;
+  final Widget? rightWidget;
 
   const LoginInput(
       {super.key,
@@ -18,7 +19,7 @@ class LoginInput extends StatefulWidget {
       this.focusChanged,
       this.lineStretch = false,
       this.obscureText = false,
-      this.keyboardType});
+      this.keyboardType, this.rightWidget});
 
   @override
   State<LoginInput> createState() => _LoginInputState();
@@ -48,31 +49,35 @@ class _LoginInputState extends State<LoginInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                widget.title,
-                style: TextStyle(fontSize: 16),
+    return Container(
+      height: 50,
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  widget.title,
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
+              _input(),
+              widget.rightWidget??Container(),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: !widget.lineStretch ? 15 : 0,
+              right: !widget.lineStretch ? 15 : 0,
             ),
-            _input(),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            left: !widget.lineStretch ? 15 : 0,
-            right: !widget.lineStretch ? 15 : 0,
+            child: Divider(
+              height: 1,
+              thickness: 0.5,
+            ),
           ),
-          child: Divider(
-            height: 1,
-            thickness: 0.5,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -102,4 +107,12 @@ class _LoginInputState extends State<LoginInput> {
       ),
     );
   }
+
+  // _right() {
+  //   if (widget.rightWidget != null) {
+  //     return widget.rightWidget;
+  //   }
+  //
+  //   return Container();
+  // }
 }

@@ -1,20 +1,19 @@
+import 'package:yut/common/entity/basic_resp.dart';
 import 'package:yut/common/logs/logs.dart';
 import 'package:yut/http/dao/login.dart';
 
 enum HttpMethod { GET, POST, DELETE }
 
-// https://api.devio.org/uapi/swagger-ui.html
-
 abstract class BaseRequest {
   Map<String, dynamic> queryParameters = {}; // query
-  Map<String, String> params = {}; // data
+  Map<String, dynamic> params = {}; // data
   Map<String, String> header = {}; // header
   bool neeLogin();
 
-  var userHttps = true;
+  var userHttps = false;
 
   String authority() {
-    return "api.devio.org";
+    return "192.168.31.66:8881";
   }
 
   HttpMethod httpMethod();
@@ -43,9 +42,6 @@ abstract class BaseRequest {
       Log.info("$header");
     }
 
-    query("course-flag", "fa");
-    query("courseFlag", "fa");
-
     return ui;
   }
 
@@ -55,8 +51,14 @@ abstract class BaseRequest {
   }
 
   // add params
-  BaseRequest add(String k, Object v) {
-    params[k] = v.toString();
+  BaseRequest add(String k, dynamic v) {
+    params[k] = v;
+    return this;
+  }
+
+  // set params
+  BaseRequest setParam(Map<String, dynamic> v) {
+    params = v;
     return this;
   }
 
@@ -70,5 +72,15 @@ abstract class BaseRequest {
   BaseRequest addHeader(String k, Object v) {
     header[k] = v.toString();
     return this;
+  }
+}
+
+class NetTools {
+  static String? CheckError(Map<String, dynamic> postsJson) {
+    BasicResp posts = BasicResp.fromJson(postsJson);
+    if (posts.code != "0") {
+      return posts.message;
+    }
+    return null;
   }
 }

@@ -3,6 +3,8 @@ import 'package:yut/http/core/hi_error.dart';
 import 'package:yut/http/dao/login.dart';
 import 'package:yut/widget/appbar.dart';
 import 'package:yut/widget/login_input.dart';
+import '../common/entity/captcha.dart';
+import '../common/utils/img.dart';
 import '../common/utils/strings.dart';
 import '../widget/LOGIN_EFFECT.dart';
 import '../widget/login_button.dart';
@@ -21,8 +23,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool protect = false; // 保護 儅輸入密碼的時候 導航圖片顯示
   bool loginEnable = false; // 參數校驗完畢 可登錄
   String? userName;
+  String? account;
   String? password;
   String? rePassword;
+  String? captcha;
+  String? captchaID;
+  String? captchaImage;
+
+  @override
+  void initState() {
+    super.initState();
+    // 初始化后加載
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onInit();
+    });
+  }
+
+  onInit() async {
+    CaptchaEntity? cap = await LoginDao.captcha();
+    if (cap != null) {
+      setState(() {
+        captchaImage = cap.data!.base64Captcha!;
+        captchaID = cap.data!.captchaId!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +59,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
           children: <Widget>[
             LoginEffect(
               protect: protect,
+            ),
+            LoginInput(
+              title: "Account",
+              hint: "請輸Account",
+              onChanged: (text) {
+                account = text;
+                checkInput();
+              },
             ),
             LoginInput(
               title: "用戶名",
@@ -72,27 +105,54 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 });
               },
             ),
+            LoginInput(
+              title: "驗證碼",
+              hint: "請輸驗證碼",
+              obscureText: false,
+              onChanged: (text) {
+                captcha = text;
+                checkInput();
+              },
+              rightWidget: Container(
+                height: 40,
+                padding: EdgeInsets.only(right: 10),
+                child: () {
+                  if (this.captchaImage != null) {
+                    return InkWell(
+                      child: imageFromBase64String(this.captchaImage!),
+                      onTap: () async {
+                        CaptchaEntity? cap = await LoginDao.captcha();
+                        if (cap != null) {
+                          setState(() {
+                            captchaImage = cap.data!.base64Captcha!;
+                            captchaID = cap.data!.captchaId!;
+                          });
+                        }
+                      },
+                    );
+                  }
+                  return Container();
+                }(),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.only(top: 20, left: 20, right: 20),
               child: LoginButton('注册',
                   enable: loginEnable, onPressed: checkParams),
             )
-            // Padding(
-            //   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-            //   child: _loginButton(),
-            // )
           ],
         ),
       ),
     );
   }
 
-
   void checkInput() {
     bool enable;
     if (isNotEmpty(userName) &&
         isNotEmpty(password) &&
-        isNotEmpty(rePassword)) {
+        isNotEmpty(rePassword) &&
+        isNotEmpty(captcha) &&
+        isNotEmpty(account)) {
       enable = true;
     } else {
       enable = false;
@@ -104,8 +164,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void send() async {
     try {
-      var result =
-      await LoginDao.registration(userName!, password!);
+      var result = await LoginDao.registration(
+          captchaID!, captcha!, userName!, password!, account!);
       print(result);
       if (result['code'] == 0) {
         print('注册成功');
@@ -134,62 +194,4 @@ class _RegistrationPageState extends State<RegistrationPage> {
     send();
   }
 
-  // void checkInput() {
-  //   bool enable;
-  //   if (isNotEmpty(userName) &&
-  //       isNotEmpty(password) &&
-  //       isNotEmpty(rePassword)) {
-  //     enable = true;
-  //   } else {
-  //     enable = false;
-  //   }
-  //   setState(() {
-  //     loginEnable = enable;
-  //   });
-  // }
-  //
-  // _loginButton() {
-  //   return InkWell(
-  //     child: Text('Registration'),
-  //     onTap: () {
-  //       if (!checkParams()) {
-  //         MyDialog.Alert(context, "Error", Text("參數錯誤"));
-  //         return;
-  //       }
-  //       if (loginEnable) {
-  //         _send();
-  //       } else {
-  //         MyDialog.Alert(context, "Error", Text("請認真填寫參數"));
-  //       }
-  //     },
-  //   );
-  // }
-  //
-  // bool checkParams() {
-  //   if (password == rePassword) {
-  //     return true;
-  //   }
-  //
-  //   return false;
-  // }
-  //
-  // _send() async {
-  //   try {
-  //     var result = await LoginDao.registration(userName!, password!);
-  //     if (result["code"] == 0) {
-  //       if (widget.onJumpToLogin != null) {
-  //         widget.onJumpToLogin();
-  //       }
-  //     } else {
-  //       print(result['msg']);
-  //     }
-  //   } on HiNetError catch (e) {
-  //     print(e);
-  //     // Log.info("$e", StackTrace.current);
-  //   } catch (e) {
-  //     Log.info("$e", StackTrace.current);
-  //   }
-  //
-  //   print("no empt");
-  // }
 }
