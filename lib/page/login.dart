@@ -14,7 +14,12 @@ import '../widget/login_button.dart';
 import '../widget/login_input.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final VoidCallback? onJumpRegistration;
+  final VoidCallback? onSuccess;
+
+
+  const LoginPage({Key? key, this.onJumpRegistration,this.onSuccess}) : super(key: key);
+
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -51,7 +56,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("注冊", "登錄", () {}),
+      appBar: appBar("登錄", "注冊", () {
+        print("object");
+        if (widget.onJumpRegistration != null) {
+          widget.onJumpRegistration!();
+        }
+        // widget.onJumpRegistration??widget.onJumpRegistration!();
+      }),
       body: Container(
         child: ListView(
           // 自適應鍵盤彈起,防止遮擋
@@ -157,6 +168,9 @@ class _LoginPageState extends State<LoginPage> {
 
       HiCache.getInstance().setString(LoginDao.BOARDING_PASS, loginResp.data!.jwt!);
       showToast("Login Success");
+      if (widget.onSuccess != null) {
+        widget.onSuccess!();
+      }
     }catch (e) {
       Log.info("$e",StackTrace.current);
       await upImg();

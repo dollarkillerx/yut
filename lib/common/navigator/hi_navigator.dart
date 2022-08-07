@@ -52,3 +52,18 @@ int getPageIndex(List<Page<dynamic>>  pages, RouteStatus routeStatus) {
 
   return -1;
 }
+
+// 監聽頁面是否壓後臺
+class HiNavigator {
+  static HiNavigator? _instance;
+
+  HiNavigator._();
+
+  static HiNavigator getInstance() {
+    if (_instance == null) {
+      _instance = HiNavigator._();
+    }
+
+    return _instance!;
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yut/common/local_storage/hi_cache.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
+import 'package:yut/common/utils/toast.dart';
 import 'package:yut/http/dao/login.dart';
 import 'package:yut/page/home.dart';
 import 'package:yut/page/login.dart';
@@ -83,23 +84,40 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>  with ChangeNotifi
         notifyListeners(); // 通知數據變化
       }));
     }else if (routeStatus == RouteStatus.login) {
-     page = pageWrap(LoginPage());
+     page = pageWrap(LoginPage(onSuccess: () {
+       _routeStatus = RouteStatus.home;
+       notifyListeners();
+     },onJumpRegistration: () {
+       _routeStatus = RouteStatus.registration;
+       notifyListeners();
+     },));
     }
 
     tempPages = [...tempPages,page];
     pages = tempPages;
     // 構建路由堆棧
 
-    return Navigator(
+    return WillPopScope(child: Navigator(
       key: navigatorKey,
       pages: pages,
       onPopPage: (route,result) {
-          if (!route.didPop(result)) {
-            return false;
+        if (route.settings is MaterialPage) {
+          // 登錄未的登陸返回攔截
+          if ((route.settings as MaterialPage).child is LoginPage) {
+            if (!hasLogin) {
+              showWarnToast("please login");
+              return false;
+            }
           }
-          return true;
+        }
+
+        if (!route.didPop(result)) {
+          return false;
+        }
+        pages.removeLast();
+        return true;
       },
-    );
+    ), onWillPop: () async => !(await navigatorKey.currentState?.maybePop() ?? false));
   }
 
   @override
