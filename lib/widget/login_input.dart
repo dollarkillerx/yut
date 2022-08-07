@@ -19,7 +19,8 @@ class LoginInput extends StatefulWidget {
       this.focusChanged,
       this.lineStretch = false,
       this.obscureText = false,
-      this.keyboardType, this.rightWidget});
+      this.keyboardType,
+      this.rightWidget});
 
   @override
   State<LoginInput> createState() => _LoginInputState();
@@ -63,7 +64,7 @@ class _LoginInputState extends State<LoginInput> {
                 ),
               ),
               _input(),
-              widget.rightWidget??Container(),
+              widget.rightWidget ?? Container(),
             ],
           ),
           Padding(
@@ -108,11 +109,11 @@ class _LoginInputState extends State<LoginInput> {
     );
   }
 
-  // _right() {
-  //   if (widget.rightWidget != null) {
-  //     return widget.rightWidget;
-  //   }
-  //
-  //   return Container();
-  // }
+// _right() {
+//   if (widget.rightWidget != null) {
+//     return widget.rightWidget;
+//   }
+//
+//   return Container();
+// }
 }

@@ -22,7 +22,8 @@ class _HomePageState extends State<HomePage>
     super.initState();
     // tabController 需要 with TickerProviderStateMixin
     _tabController = TabController(
-      length: tabs.length, vsync: this,
+      length: tabs.length,
+      vsync: this,
     );
 
     HiNavigator.getInstance().addListener(listener = (current, pre) {
@@ -51,11 +52,12 @@ class _HomePageState extends State<HomePage>
       body: Column(
         children: [
           Container(
-              color: Colors.white,
-              padding: EdgeInsets.only(top: 30),
-              child: _tabBar(),
+            color: Colors.white,
+            padding: EdgeInsets.only(top: 30),
+            child: _tabBar(),
           ),
-          Flexible(child: TabBarView(
+          Flexible(
+              child: TabBarView(
             controller: _tabController,
             children: tabs.map((e) {
               return HomeTabPage(name: e);
@@ -82,11 +84,15 @@ class _HomePageState extends State<HomePage>
       ),
       // 圓角指示器
       tabs: tabs.map<Tab>((tab) {
-        return Tab(child: Padding(
+        return Tab(
+            child: Padding(
           padding: EdgeInsets.only(left: 5, right: 5),
-          child: Text(tab, style: TextStyle(
-            fontSize: 16,
-          ),),
+          child: Text(
+            tab,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
         ));
       }).toList(),
     );

@@ -5,7 +5,6 @@ class HiCache {
 
   static HiCache? _instance;
 
-
   HiCache._pre(SharedPreferences prefs) {
     this.prefs = prefs;
   }
@@ -19,7 +18,7 @@ class HiCache {
     return _instance!;
   }
 
-  static HiCache getInstance()  {
+  static HiCache getInstance() {
     if (_instance == null) {
       HiCache._();
     }
@@ -56,31 +55,31 @@ class HiCache {
   }
 
   /// 获取返回为bool的内容
-  bool? getBool(String key)  {
+  bool? getBool(String key) {
     bool? value = prefs!.getBool(key);
     return value;
   }
 
   /// 获取返回为double的内容
-  double? getDouble(String key)  {
+  double? getDouble(String key) {
     double? value = prefs!.getDouble(key);
     return value;
   }
 
   /// 获取返回为int的内容
-  int? getInt(String key)  {
+  int? getInt(String key) {
     int? value = prefs!.getInt(key);
     return value;
   }
 
   /// 获取返回为String的内容
-  String? getString(String key)  {
+  String? getString(String key) {
     String? value = prefs!.getString(key);
     return value;
   }
 
   /// 获取返回为StringList的内容
-  List<String>? getStringList(String key)  {
+  List<String>? getStringList(String key) {
     List<String>? value = prefs!.getStringList(key);
     return value;
   }

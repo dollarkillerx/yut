@@ -6,7 +6,6 @@ const MaterialColor primary = const MaterialColor(
   const <int, Color>{50: const Color(0xfff9db5)},
 );
 
-
 /// White
 const MaterialColor white = const MaterialColor(
   0xFFFFFFFF,
@@ -23,5 +22,3 @@ const MaterialColor white = const MaterialColor(
     900: Color(0xFFFFFFFF),
   },
 );
-
-

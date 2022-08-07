@@ -10,29 +10,23 @@ typedef RouteChangeListener(RouteStatusInfo current, RouteStatusInfo? pre);
 
 // create page
 pageWrap(Widget child) {
-  return MaterialPage(key: ValueKey(child.hashCode),child: child);
+  return MaterialPage(key: ValueKey(child.hashCode), child: child);
 }
 
 // 自定義路由封裝,路由狀態
-enum RouteStatus {
-  login,
-  registration,
-  home,
-  detail,
-  unknown
-}
+enum RouteStatus { login, registration, home, detail, unknown }
 
 // 獲取page 對應的RouteStatus
 RouteStatus getStatus(MaterialPage page) {
   if (page.child is LoginPage) {
     return RouteStatus.login;
-  }else if (page.child is RegistrationPage) {
+  } else if (page.child is RegistrationPage) {
     return RouteStatus.registration;
-  }else if (page.child is BottomNavigator) {
+  } else if (page.child is BottomNavigator) {
     return RouteStatus.home;
-  }else if (page.child is VideoDetailPage) {
+  } else if (page.child is VideoDetailPage) {
     return RouteStatus.detail;
-  }else {
+  } else {
     return RouteStatus.unknown;
   }
 }
@@ -46,8 +40,8 @@ class RouteStatusInfo {
 }
 
 // 獲取routeStatus在頁面堆棧中的位置
-int getPageIndex(List<Page<dynamic>>  pages, RouteStatus routeStatus) {
-  for (int i=0;i<pages.length;i++) {
+int getPageIndex(List<Page<dynamic>> pages, RouteStatus routeStatus) {
+  for (int i = 0; i < pages.length; i++) {
     Page<dynamic> page = pages[i];
     if (getStatus(page as MaterialPage) == routeStatus) {
       return i;
@@ -58,12 +52,14 @@ int getPageIndex(List<Page<dynamic>>  pages, RouteStatus routeStatus) {
 }
 
 // 監聽頁面是否壓後臺
-class HiNavigator extends _RouteJumpListener{
+class HiNavigator extends _RouteJumpListener {
   static HiNavigator? _instance;
 
   RouteJumpListener? _routeJump;
   List<RouteChangeListener> _listeners = [];
+
   HiNavigator._();
+
   RouteStatusInfo? _current;
   RouteStatusInfo? _bottomTab;
 
@@ -99,8 +95,12 @@ class HiNavigator extends _RouteJumpListener{
   }
 
   // 通知路由頁面變化
-  void notify(List<Page<dynamic>> currentPage,List<Page<dynamic>> prePages,) {
-    var current = RouteStatusInfo(getStatus(currentPage.last as MaterialPage), (currentPage.last as MaterialPage).child);
+  void notify(
+    List<Page<dynamic>> currentPage,
+    List<Page<dynamic>> prePages,
+  ) {
+    var current = RouteStatusInfo(getStatus(currentPage.last as MaterialPage),
+        (currentPage.last as MaterialPage).child);
     _notify(current);
   }
 
@@ -112,7 +112,7 @@ class HiNavigator extends _RouteJumpListener{
     print('hi current: ${current.page}');
     print('hi pre: ${_current?.page}');
     _listeners.forEach((element) {
-      element(current,_current);
+      element(current, _current);
     });
     _current = current;
   }
@@ -134,5 +134,6 @@ typedef OnJumpTo = void Function(RouteStatus routeStatus, {Map? args});
 // 定義路由跳轉邏輯實現功能
 class RouteJumpListener {
   final OnJumpTo onJumpTo;
+
   RouteJumpListener(this.onJumpTo);
 }

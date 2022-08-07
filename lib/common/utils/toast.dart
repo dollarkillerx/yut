@@ -18,5 +18,3 @@ void showToast(String msg) {
     gravity: ToastGravity.CENTER,
   );
 }
-
-

@@ -21,7 +21,11 @@ class _LoginEffectState extends State<LoginEffect> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _image(true),
-          Image(image: AssetImage('images/logo.png'),height: 90,width: 90,),
+          Image(
+            image: AssetImage('images/logo.png'),
+            height: 90,
+            width: 90,
+          ),
           _image(false),
         ],
       ),

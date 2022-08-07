@@ -33,7 +33,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
 
     // 地面第一次打開時 通知是哪一個 tab
     if (!_hasBuild) {
-      HiNavigator.getInstance().onBottomTabChange(initialPage, _pages[initialPage]);
+      HiNavigator.getInstance()
+          .onBottomTabChange(initialPage, _pages[initialPage]);
       _hasBuild = true;
     }
 
@@ -46,12 +47,12 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           FavoritePage(),
           ProfilePage(),
         ],
-        onPageChanged: (index)=>_onJumpTo(index,pageChange: true),
+        onPageChanged: (index) => _onJumpTo(index, pageChange: true),
         physics: NeverScrollableScrollPhysics(), // 禁止滾動
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index)=>_onJumpTo(index),
+        onTap: (index) => _onJumpTo(index),
         selectedItemColor: _activeColor,
         items: [
           _bottomItem('Home', Icons.home, 0),
@@ -77,10 +78,10 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     );
   }
 
-  void _onJumpTo(int index,{pageChange=false}) {
+  void _onJumpTo(int index, {pageChange = false}) {
     if (!pageChange) {
       _controller.jumpToPage(index);
-    }else {
+    } else {
       HiNavigator.getInstance().onBottomTabChange(index, _pages[index]);
     }
     setState(() {
