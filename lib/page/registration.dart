@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:yut/common/navigator/hi_navigator.dart';
+import 'package:yut/common/utils/toast.dart';
 import 'package:yut/http/core/hi_error.dart';
 import 'package:yut/http/dao/login.dart';
 import 'package:yut/widget/appbar.dart';
@@ -10,9 +12,7 @@ import '../widget/LOGIN_EFFECT.dart';
 import '../widget/login_button.dart';
 
 class RegistrationPage extends StatefulWidget {
-  final VoidCallback onJumpToLogin;
-
-  const RegistrationPage({Key? key, required this.onJumpToLogin})
+  const RegistrationPage({Key? key})
       : super(key: key);
 
   @override
@@ -52,7 +52,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("注冊", "登錄", widget.onJumpToLogin),
+      appBar: appBar("注冊", "登錄", () {
+        HiNavigator.getInstance().onJumpTo(RouteStatus.login);
+      }),
       body: Container(
         child: ListView(
           // 自適應鍵盤彈起,防止遮擋
@@ -168,10 +170,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
           captchaID!, captcha!, userName!, password!, account!);
       print(result);
       if (result['code'] == 0) {
-        print('注册成功');
-        if (widget.onJumpToLogin != null) {
-          widget.onJumpToLogin();
-        }
+        showToast("注册成功");
+        HiNavigator.getInstance().onJumpTo(RouteStatus.login);
       } else {
         print(result['msg']);
       }

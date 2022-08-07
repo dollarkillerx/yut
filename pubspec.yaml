@@ -40,6 +40,7 @@ dependencies:
   flutter_smart_dialog: ^4.5.3+8
   jwt_decode: ^0.3.1
   fluttertoast: ^8.0.9
+  underline_indicator: ^0.0.4
 
 dev_dependencies:
   flutter_test:

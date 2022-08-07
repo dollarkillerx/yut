@@ -3,12 +3,12 @@ import 'package:yut/common/local_storage/hi_cache.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
 import 'package:yut/common/utils/toast.dart';
 import 'package:yut/http/dao/login.dart';
-import 'package:yut/page/home.dart';
 import 'package:yut/page/login.dart';
 import 'package:yut/page/registration.dart';
 import 'package:yut/page/video_detail.dart';
 import 'common/entity/video.dart';
 import 'common/color/color.dart';
+import 'common/navigator/bottom_navigator.dart';
 
 void main() {
   runApp(const BiliApp());
@@ -47,7 +47,18 @@ class _BiliAppState extends State<BiliApp> {
 class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>  with ChangeNotifier,PopNavigatorRouterDelegateMixin<BiliRoutePath> {
   final GlobalKey<NavigatorState> navigatorKey;
   // 為Navigator設置一個key,必要的時候通過navigatorKey.currentState來獲取到NavigatorState對象
-  BiliRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+  BiliRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
+    HiNavigator.getInstance().registerRouteJump(RouteJumpListener((routeStatus, {args}) {
+      _routeStatus = routeStatus;
+      if (routeStatus == RouteStatus.detail) {
+        if (args!= null) {
+          this.videoModel = args['videoMo'];
+        }
+      }
+
+      notifyListeners();
+    }));
+  }
   // 存放所有的頁面
   List<Page<dynamic>> pages = [];
   VideoModel? videoModel;
@@ -72,30 +83,20 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>  with ChangeNotifi
     // 如果是首頁 將棧内其他都出棧
     if (routeStatus==RouteStatus.home) {
       pages.clear();
-      page = pageWrap(HomePage(onJumpToDetail: (videoModel) {
-        this.videoModel = videoModel;
-        notifyListeners(); // 通知數據變化
-      },));
+      page = pageWrap(const BottomNavigator());
     }else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(VideoDetailPage(videoModel: videoModel!));
     }else if (routeStatus == RouteStatus.registration) {
-      page = pageWrap(RegistrationPage(onJumpToLogin: () {
-        _routeStatus = RouteStatus.login;
-        notifyListeners(); // 通知數據變化
-      }));
+      page = pageWrap(const RegistrationPage());
     }else if (routeStatus == RouteStatus.login) {
-     page = pageWrap(LoginPage(onSuccess: () {
-       _routeStatus = RouteStatus.home;
-       notifyListeners();
-     },onJumpRegistration: () {
-       _routeStatus = RouteStatus.registration;
-       notifyListeners();
-     },));
+     page = pageWrap(const LoginPage());
     }
 
-    tempPages = [...tempPages,page];
-    pages = tempPages;
     // 構建路由堆棧
+    tempPages = [...tempPages,page];
+    // 儅路由發生變化
+    HiNavigator.getInstance().notify(tempPages, pages);
+    pages = tempPages;
 
     return WillPopScope(child: Navigator(
       key: navigatorKey,
@@ -114,7 +115,11 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>  with ChangeNotifi
         if (!route.didPop(result)) {
           return false;
         }
+
+        // 儅路由發生變化
+        var tempPages = [...pages];
         pages.removeLast();
+        HiNavigator.getInstance().notify(pages, tempPages);
         return true;
       },
     ), onWillPop: () async => !(await navigatorKey.currentState?.maybePop() ?? false));
