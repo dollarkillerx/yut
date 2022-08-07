@@ -13,7 +13,7 @@ abstract class BaseRequest {
   var userHttps = false;
 
   String authority() {
-    return "192.168.31.66:8881";
+    return "192.168.31.74:8881";
   }
 
   HttpMethod httpMethod();
