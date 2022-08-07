@@ -124,7 +124,7 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
           },
         ),
         onWillPop: () async =>
-            !(await navigatorKey.currentState?.maybePop() ?? false));
+            !(await navigatorKey.currentState?.maybePop() ?? false)); // 兼容安卓原生返回
   }
 
   @override
