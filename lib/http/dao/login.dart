@@ -11,7 +11,7 @@ import '../request/base_request.dart';
 import '../request/registration.dart';
 
 class LoginDao {
-  static const BOARDING_PASS = "boarding-pass";
+  static const BOARDING_PASS = "Authorization";
 
   static login(String captchaID, String captchaCode, String account, String password) async {
     var request = LoginRequest();
@@ -39,23 +39,9 @@ class LoginDao {
       name: name,
     );
     request.setParam(regRequest.toJson());
-    try {
-      var result = await HiNet.getInstance().fire(request);
-      var err = NetTools.CheckError(result);
-      if (err != null) {
-        SmartDialog.showToast(err);
-        return;
-      }
 
-      // // To decode the token
-      // Map<String, dynamic> payload = Jwt.parseJwt(loginResp.data!.jwt!);
-      // // Print the payload
-      // print(payload);
-      SmartDialog.showToast("Registry Success");
-    }catch (e) {
-      Log.info("$e",StackTrace.current);
-      SmartDialog.showToast("$e");
-    }
+    var result = await HiNet.getInstance().fire(request);
+    return result;
   }
 
   static Future<CaptchaEntity?> captcha() async {
@@ -82,4 +68,3 @@ class LoginDao {
   }
 }
 
-// WorldLink,

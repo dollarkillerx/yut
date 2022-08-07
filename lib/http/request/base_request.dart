@@ -10,10 +10,10 @@ abstract class BaseRequest {
   Map<String, String> header = {}; // header
   bool neeLogin();
 
-  var userHttps = false;
+  var userHttps = true;
 
   String authority() {
-    return "192.168.31.74:8881";
+    return "ggapi.mechat.live";
   }
 
   HttpMethod httpMethod();

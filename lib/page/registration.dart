@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
 import 'package:yut/common/utils/toast.dart';
-import 'package:yut/http/core/hi_error.dart';
 import 'package:yut/http/dao/login.dart';
 import 'package:yut/widget/appbar.dart';
 import 'package:yut/widget/login_input.dart';
 import '../common/entity/captcha.dart';
+import '../common/logs/logs.dart';
 import '../common/utils/img.dart';
 import '../common/utils/strings.dart';
+import '../http/request/base_request.dart';
 import '../widget/LOGIN_EFFECT.dart';
 import '../widget/login_button.dart';
 
@@ -168,17 +169,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
     try {
       var result = await LoginDao.registration(
           captchaID!, captcha!, userName!, password!, account!);
-      print(result);
-      if (result['code'] == 0) {
-        showToast("注册成功");
-        HiNavigator.getInstance().onJumpTo(RouteStatus.login);
-      } else {
-        print(result['msg']);
+      var err = NetTools.CheckError(result);
+      if (err != null) {
+        showToast(err);
+        return;
       }
-    } on NeedAuth catch (e) {
-      print(e);
-    } on HiNetError catch (e) {
-      print(e);
+
+      showToast("注册成功");
+      HiNavigator.getInstance().onJumpTo(RouteStatus.login);
+    }catch (e) {
+      Log.info("$e",StackTrace.current);
+      showWarnToast("$e");
     }
   }
 
