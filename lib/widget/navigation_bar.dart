@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import '../common/utils/view_util.dart';
 
 enum StatusStyle {
   LIGHT_CONTENT,
   DARK_CONTENT
 }
 
-class NavigationBar extends StatelessWidget {
+class MyNavigationBar extends StatelessWidget {
   final StatusStyle statusStyle;
   final Color color;
   final double height;
   final Widget child;
 
-  const NavigationBar({Key? key,  this.statusStyle  = StatusStyle.DARK_CONTENT, this.color = Colors.white, this.height = 16, required this.child}) : super(key: key);
+  const MyNavigationBar({Key? key,  this.statusStyle  = StatusStyle.DARK_CONTENT, this.color = Colors.white, this.height = 16, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,10 @@ class NavigationBar extends StatelessWidget {
       ),
     );
   }
+
+  void _statusBarInit() {
+    //沉浸式状态栏
+    changeStatusBar(color: color, statusStyle: statusStyle);
+  }
 }
 
-// flutter pub add flutter_statusbar_manager 修改狀態欄樣式

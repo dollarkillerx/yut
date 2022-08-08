@@ -9,9 +9,11 @@ import '../common/logs/logs.dart';
 import '../common/utils/toast.dart';
 import '../http/dao/tops.dart';
 import '../http/request/base_request.dart';
+import '../widget/navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final ValueChanged<int>? onJumTo;
+  const HomePage({Key? key, this.onJumTo}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -40,7 +42,7 @@ class _HomePageState extends HiState<HomePage>
     //   }
     // });
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _asyncMethod();
     });
   }
@@ -54,20 +56,19 @@ class _HomePageState extends HiState<HomePage>
         return;
       }
       Tops loginResp = Tops.fromJson(result);
-     setState(() {
-       tabs =  loginResp.data!;
-       _tabController = TabController(
-         length: tabs.length,
-         vsync: this,
-       );
-       isLoad = false;
-     });
-    }catch (e) {
-      Log.info("$e",StackTrace.current);
+      setState(() {
+        tabs = loginResp.data!;
+        _tabController = TabController(
+          length: tabs.length,
+          vsync: this,
+        );
+        isLoad = false;
+      });
+    } catch (e) {
+      Log.info("$e", StackTrace.current);
       showWarnToast("$e");
     }
   }
-
 
   // @override
   // void dispose() {
@@ -121,9 +122,15 @@ class _HomePageState extends HiState<HomePage>
           color: Colors.cyan,
         ),
       );
-    }else {
+    } else {
       return Column(
         children: [
+          MyNavigationBar(
+            height: 50,
+            child: _appBar(),
+            color: Colors.white,
+            statusStyle: StatusStyle.DARK_CONTENT,
+          ),
           Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 30),
@@ -131,13 +138,71 @@ class _HomePageState extends HiState<HomePage>
           ),
           Flexible(
               child: TabBarView(
-                controller: _tabController,
-                children: tabs.map((e) {
-                  return HomeTabPage(name: e.name!, topic: e.key!,);
-                }).toList(),
-              ))
+            controller: _tabController,
+            children: tabs.map((e) {
+              return HomeTabPage(
+                name: e.name!,
+                topic: e.key!,
+              );
+            }).toList(),
+          ))
         ],
       );
     }
+  }
+
+  _appBar() {
+    return Padding(
+      padding: EdgeInsets.only(left: 15, right: 15),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {
+              if (widget.onJumTo != null) {
+                print("on jumto");
+                widget.onJumTo!(3);
+              }
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(23),
+              child: Image(
+                width: 46,
+                height: 46,
+                image: AssetImage('images/avatar.png'),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: EdgeInsets.only(left: 10),
+                  height: 32,
+                  alignment: Alignment.centerLeft,
+                  child: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                  ),
+                  decoration: BoxDecoration(color: Colors.grey[100]),
+                ),
+              ),
+            ),
+          ),
+          Icon(
+            Icons.explore_outlined,
+            color: Colors.grey,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 12),
+            child: Icon(
+              Icons.mail_outline,
+              color: Colors.grey,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

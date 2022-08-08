@@ -42,7 +42,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
       body: PageView(
         controller: _controller,
         children: [
-          HomePage(),
+          HomePage(onJumTo: (idx) =>  _onJumpTo(idx,pageChange: false),),
           RankingPage(),
           FavoritePage(),
           ProfilePage(),

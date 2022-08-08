@@ -3,7 +3,6 @@ import 'package:yut/common/entity/captcha.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
 import 'package:yut/common/utils/img.dart';
 import 'package:yut/common/utils/toast.dart';
-import '../common/entity/login.dart';
 import '../common/local_storage/hi_cache.dart';
 import '../common/logs/logs.dart';
 import '../common/utils/strings.dart';
@@ -156,10 +155,7 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       Log.info("$result",StackTrace.current);
-      LoginResponseEntity loginResp = LoginResponseEntity.fromJson(result);
-      print(loginResp.toJson());
-
-      HiCache.getInstance().setString(LoginDao.BOARDING_PASS, loginResp.data!.jwt!);
+      HiCache.getInstance().setString(LoginDao.BOARDING_PASS, result.data!.jwt!);
       showToast("Login Success");
       HiNavigator.getInstance().onJumpTo(RouteStatus.home);
     }catch (e) {

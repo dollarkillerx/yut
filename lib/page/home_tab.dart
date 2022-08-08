@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:yut/common/entity/banner.dart';
 import 'package:yut/core/hi_state.dart';
-import 'package:yut/http/dao/login.dart';
 import 'package:yut/widget/hi_banner.dart';
 import '../common/entity/video.dart';
 import '../common/logs/logs.dart';
@@ -25,6 +25,24 @@ class _HomeTabPageState extends HiState<HomeTabPage>
   var isLoad = true;
   List<VideoItem>? videoList;
   String? nextToken;
+
+  var bannerList = [
+    BannerMo(
+        title: "にほんだいがく",
+        img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
+        url: "https://www.nihon-u.ac.jp/"
+    ),
+    BannerMo(
+        title: "とうようだいがく",
+        img: "https://www.toyo.ac.jp/-/media/Images/Toyo/pickup/menu/enryo-coffee.ashx",
+        url: "https://www.toyo.ac.jp/"
+    ),
+    BannerMo(
+        title: "せんしゅうだいがく",
+        img: "https://www.senshu-u.ac.jp/albums/9/abm00001213.png",
+        url: "https://www.senshu-u.ac.jp/"
+    ),
+  ];
 
   @override
   void initState() {
@@ -51,13 +69,39 @@ class _HomeTabPageState extends HiState<HomeTabPage>
         color: Colors.cyan,
       );
     } else {
-      return Container(
-        child: ListView(
-          // children: [if (widget.bannerList != null) _banner()],
-          children: [_banner()],
+      return MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Container(
+          child: SingleChildScrollView(
+             /// 默认行为是，当列表高度不足以占满屏幕的时候，下拉刷新和瀑布流均失效
+             /// 所以这里应该设置  始终允许刷新
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              child: StaggeredGrid.count(
+                crossAxisCount: 2,
+                /// 列表滚动方向 默认向下
+                axisDirection: AxisDirection.down,
+                /// 由于选择了向下的列表方向，所以主轴上 item 间距是指 垂直方向上的边距
+                mainAxisSpacing: 4,
+                /// 由于选择了向下的列表方向，所以辅轴上 item 间距是指 水平方向上的边距
+                crossAxisSpacing: 4,
+                children: [
+                  if (bannerList != null) StaggeredGridTile.fit(
+                      crossAxisCellCount: 2,
+                      child: _banner()
+                  ),
+                ],
+              )
+          ),
         ),
       );
     }
+
+    // ListView(
+    //   // children: [if (widget.bannerList != null) _banner()],
+    //   children: [_banner()],
+    // )
     //   return ListView.builder(
     //       padding: EdgeInsets.all(10),
     //       shrinkWrap: true,
@@ -73,9 +117,8 @@ class _HomeTabPageState extends HiState<HomeTabPage>
   }
 
   _loadData() async {
-
     setState(() {
-      this.isLoad  = false;
+      this.isLoad = false;
     });
     return;
     try {
@@ -105,12 +148,12 @@ class _HomeTabPageState extends HiState<HomeTabPage>
 
   _banner() {
     return Padding(
-        padding: EdgeInsets.only(left: 8,right: 8),
+      padding: EdgeInsets.only(left: 8, right: 8),
       child: HiBanner(bannerList: [
         BannerMo(
-          title: "にほんだいがく",
-          img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
-          url: "https://www.nihon-u.ac.jp/"
+            title: "にほんだいがく",
+            img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
+            url: "https://www.nihon-u.ac.jp/"
         ),
         BannerMo(
             title: "とうようだいがく",
