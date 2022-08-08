@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:underline_indicator/underline_indicator.dart';
 import 'package:yut/common/color/color.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
+import 'package:yut/core/hi_state.dart';
 import 'package:yut/page/home_tab.dart';
 import '../common/entity/tops.dart';
 import '../common/logs/logs.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
+class _HomePageState extends HiState<HomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late RouteChangeListener listener;
   List<TopsItem> tabs = [];
