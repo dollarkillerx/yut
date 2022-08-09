@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
+import 'package:yut/common/utils/view_util.dart';
 import '../common/entity/banner.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -56,11 +57,7 @@ class HiBanner extends StatelessWidget {
         padding: padding,
         child: ClipRRect( // 圓角
           borderRadius: BorderRadius.all(Radius.circular(6)),
-          child: FadeInImage.memoryNetwork(
-            fit: BoxFit.cover,
-            placeholder: kTransparentImage,
-            image:
-            bannerMo.img!),
+          child: cachedImage(bannerMo.img!),
         ),
       ),
     );

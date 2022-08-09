@@ -1,7 +1,34 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import '../../widget/navigation_bar.dart';
+
+///带缓存的image
+Widget cachedImage(String url, {double? width, double? height}) {
+  // return CachedNetworkImage(
+  //   imageUrl: url,
+  //   placeholder: (context, url) => CircularProgressIndicator(),
+  //   errorWidget: (context, url, error) => Icon(Icons.error),
+  // );
+
+  return CachedNetworkImage(
+      height: height,
+      width: width,
+      fit: BoxFit.cover,
+      placeholder: (
+          BuildContext context,
+          String url,
+          ) =>
+          Container(color: Colors.grey[200]),
+      errorWidget: (
+          BuildContext context,
+          String url,
+          dynamic error,
+          ) =>
+          Icon(Icons.error),
+      imageUrl: url);
+}
 
 ///修改状态栏
 void changeStatusBar(

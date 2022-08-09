@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:yut/common/utils/view_util.dart';
 import 'package:yut/http/request/base_request.dart';
 import '../common/entity/video.dart';
 import '../http/dao/login.dart';
@@ -38,13 +39,7 @@ class VideoCard extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        FadeInImage.memoryNetwork(
-            height: 120,
-            width: size.width / 2 - 20,
-            fit: BoxFit.cover,
-            placeholder: kTransparentImage,
-            image:
-                "$ImgUrl/${videoMo.img}?token=${LoginDao.getBoardingPass()}"),
+        cachedImage("$ImgUrl/${videoMo.img}?token=${LoginDao.getBoardingPass()}"),
         Positioned(
             left: 0,
             right: 0,

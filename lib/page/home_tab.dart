@@ -51,6 +51,7 @@ class _HomeTabPageState extends HiState<HomeTabPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Center(
       child: _view(),
     );
