@@ -9,6 +9,8 @@ import '../http/dao/tops.dart';
 import '../http/request/base_request.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import '../widget/video_card.dart';
+
 class HomeTabPage extends StatefulWidget {
   final String name;
   final String topic;
@@ -30,30 +32,21 @@ class _HomeTabPageState extends HiState<HomeTabPage>
     BannerMo(
         title: "にほんだいがく",
         img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
-        url: "https://www.nihon-u.ac.jp/"
-    ),
+        url: "https://www.nihon-u.ac.jp/"),
     BannerMo(
         title: "とうようだいがく",
-        img: "https://www.toyo.ac.jp/-/media/Images/Toyo/pickup/menu/enryo-coffee.ashx",
-        url: "https://www.toyo.ac.jp/"
-    ),
+        img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
+        url: "https://www.toyo.ac.jp/"),
     BannerMo(
         title: "せんしゅうだいがく",
         img: "https://www.senshu-u.ac.jp/albums/9/abm00001213.png",
-        url: "https://www.senshu-u.ac.jp/"
-    ),
+        url: "https://www.senshu-u.ac.jp/"),
   ];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
-  }
-
-  _asyncMethod() async {
-    await this._loadData();
+    this._loadData();
   }
 
   @override
@@ -111,7 +104,7 @@ class _HomeTabPageState extends HiState<HomeTabPage>
         ],
       ),
       childrenDelegate: SliverChildBuilderDelegate(
-            (context, index) => Tile(index: index),
+        (context, index) => Tile(index: index),
       ),
     );
   }
@@ -124,14 +117,18 @@ class _HomeTabPageState extends HiState<HomeTabPage>
       /// 所以这里应该设置  始终允许刷新
       physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+
       /// VERY IMPOARTANT
       /// 引入插件 StaggeredGrid(0.6.1) 的使用
       child: StaggeredGrid.count(
         crossAxisCount: 2,
+
         /// 列表滚动方向 默认向下
         axisDirection: AxisDirection.down,
+
         /// 由于选择了向下的列表方向，所以主轴上 item 间距是指 垂直方向上的边距
         mainAxisSpacing: 4,
+
         /// 由于选择了向下的列表方向，所以辅轴上 item 间距是指 水平方向上的边距
         crossAxisSpacing: 4,
         children: [
@@ -141,37 +138,47 @@ class _HomeTabPageState extends HiState<HomeTabPage>
 
           /// 如果存在banner，则 第一个item位置显示banner (HomePage 的 tab级别页面 切换栏)
           StaggeredGridTile.fit(
-              crossAxisCellCount: 2,
-              child: _banner(),
+            crossAxisCellCount: 2,
+            child: _banner(),
           ),
 
-          // StaggeredGridTile.count(
-          //   crossAxisCellCount: 2,
-          //   mainAxisCellCount: 1,
-          //   child: Tile(index: 1),
-          // ),
-          // StaggeredGridTile.count(
-          //   crossAxisCellCount: 1,
-          //   mainAxisCellCount: 1,
-          //   child: Tile(index: 2),
-          // ),
-          // StaggeredGridTile.count(
-          //   crossAxisCellCount: 1,
-          //   mainAxisCellCount: 1,
-          //   child: Tile(index: 3),
-          // ),
+          ...?videoList?.map((VideoItem videoModel) {
+            return StaggeredGridTile.fit(
+              crossAxisCellCount: 1,
+              child: VideoCard(
+                videoMo: videoModel,
+              ),
+            );
+          }),
+
         ],
       ),
     );
   }
 
-  _loadData() async {
-    setState(() {
-      this.isLoad = false;
-    });
-    return;
+  _showVideo() {
+    if (videoList != null) {
+      List res = videoList!.map((VideoItem videoModel) {
+        return StaggeredGridTile.fit(
+          crossAxisCellCount: 1,
+          child: VideoCard(
+            videoMo: videoModel,
+          ),
+        );
+      }).toList();
+      return res;
+    }
+
+    return Container();
+  }
+
+  _loadData({loadMore = false}) async {
+    if (!loadMore) {
+      nextToken = null;
+    }
     try {
-      var result = await TopsDao.videos(topic: widget.topic);
+      var result =
+          await TopsDao.videos(topic: widget.topic, pageToken: nextToken);
       var err = NetTools.CheckError(result);
       if (err != null) {
         showWarnToast("$err");
@@ -179,8 +186,13 @@ class _HomeTabPageState extends HiState<HomeTabPage>
       }
       VideoList loginResp = VideoList.fromJson(result);
       setState(() {
-        nextToken = loginResp.data!.nextToken;
+        if (loadMore) {
+          if (loginResp.data!.item!.isNotEmpty) {
+            loginResp.data!.item = [...?videoList, ...?loginResp.data!.item];
+          }
+        }
         videoList = loginResp.data!.item;
+        nextToken = loginResp.data!.nextToken;
         isLoad = false;
       });
     } catch (e) {
@@ -202,23 +214,23 @@ class _HomeTabPageState extends HiState<HomeTabPage>
         BannerMo(
             title: "にほんだいがく",
             img: "https://www.nihon-u.ac.jp/uploads/images/20220415185608.jpg",
-            url: "https://www.nihon-u.ac.jp/"
-        ),
+            url: "https://www.nihon-u.ac.jp/"),
         BannerMo(
             title: "とうようだいがく",
-            img: "https://www.toyo.ac.jp/-/media/Images/Toyo/pickup/menu/enryo-coffee.ashx",
-            url: "https://www.toyo.ac.jp/"
-        ),
+            img:
+                "https://www.toyo.ac.jp/-/media/Images/Toyo/pickup/menu/enryo-coffee.ashx",
+            url: "https://www.toyo.ac.jp/"),
         BannerMo(
             title: "せんしゅうだいがく",
             img: "https://www.senshu-u.ac.jp/albums/9/abm00001213.png",
-            url: "https://www.senshu-u.ac.jp/"
-        ),
+            url: "https://www.senshu-u.ac.jp/"),
       ]),
     );
   }
 }
+
 const _defaultColor = Color(0xFF34568B);
+
 class Tile extends StatelessWidget {
   const Tile({
     Key? key,

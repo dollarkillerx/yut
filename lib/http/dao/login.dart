@@ -26,7 +26,6 @@ class LoginDao {
     var result = await HiNet.getInstance().fire(request);
 
     return result;
-
   }
 
   static registration(String captchaID, String captchaCode, String account, String password,String name) async {

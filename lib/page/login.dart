@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yut/common/entity/captcha.dart';
+import 'package:yut/common/entity/login.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
 import 'package:yut/common/utils/img.dart';
 import 'package:yut/common/utils/toast.dart';
@@ -149,18 +150,26 @@ class _LoginPageState extends State<LoginPage> {
       var result = await LoginDao.login(captchaID!, captcha!, account!, password!);
       var err = NetTools.CheckError(result);
       if (err != null) {
+        Log.info("$err",StackTrace.current);
+        print(err);
         showWarnToast("$err");
         await upImg();
         return;
       }
 
       Log.info("$result",StackTrace.current);
-      HiCache.getInstance().setString(LoginDao.BOARDING_PASS, result.data!.jwt!);
+
+      LoginResponseEntity resp = LoginResponseEntity.fromJson(result);
+
+      HiCache.getInstance().setString(LoginDao.BOARDING_PASS, resp.data!.jwt!);
+
       showToast("Login Success");
+
       HiNavigator.getInstance().onJumpTo(RouteStatus.home);
     }catch (e) {
       Log.info("$e",StackTrace.current);
       await upImg();
+      print(e);
       showWarnToast("$e");
     }
   }
