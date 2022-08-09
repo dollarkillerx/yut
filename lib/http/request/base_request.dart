@@ -4,6 +4,8 @@ import 'package:yut/http/dao/login.dart';
 
 enum HttpMethod { GET, POST, DELETE }
 
+var ImgUrl = "https://ggapi.mechat.live/api/v1/asset";
+
 abstract class BaseRequest {
   Map<String, dynamic> queryParameters = {}; // query
   Map<String, dynamic> params = {}; // data
