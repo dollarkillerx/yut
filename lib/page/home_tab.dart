@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:yut/common/entity/banner.dart';
 import 'package:yut/core/hi_state.dart';
 import 'package:yut/widget/hi_banner.dart';
@@ -27,6 +28,7 @@ class _HomeTabPageState extends HiState<HomeTabPage>
   var isLoad = true;
   List<VideoItem>? videoList;
   String? nextToken;
+  RefreshController _controller=RefreshController(initialRefresh: false);
 
   var bannerList = [
     BannerMo(
@@ -67,7 +69,19 @@ class _HomeTabPageState extends HiState<HomeTabPage>
         context: context,
         removeTop: true,
         child: Container(
-          child: _showB(),
+          child: SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: WaterDropHeader(),
+              footer: ClassicFooter(
+                loadStyle: LoadStyle.ShowAlways,
+                completeDuration: Duration(microseconds: 50),
+              ),
+              onRefresh: (){_loadData(loadMore: true);},
+              onLoading: (){_loadData();},
+              controller: _controller,
+              child: _showB(),
+          ),
         ),
       );
     }
@@ -157,6 +171,25 @@ class _HomeTabPageState extends HiState<HomeTabPage>
     );
   }
 
+  // _showC() {
+  //   return ListView(
+  //     /// 滚动控制器实现瀑布流
+  //     // controller: _scrollController,
+  //     /// 默认行为是，当列表高度不足以占满屏幕的时候，下拉刷新和瀑布流均失效
+  //     /// 所以这里应该设置  始终允许刷新
+  //     physics: const AlwaysScrollableScrollPhysics(),
+  //     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
+
   _showVideo() {
     if (videoList != null) {
       List res = videoList!.map((VideoItem videoModel) {
@@ -174,6 +207,7 @@ class _HomeTabPageState extends HiState<HomeTabPage>
   }
 
   _loadData({loadMore = false}) async {
+    print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
     if (!loadMore) {
       nextToken = null;
     }
@@ -202,6 +236,11 @@ class _HomeTabPageState extends HiState<HomeTabPage>
       setState(() {
         isLoad = false;
       });
+    }
+    if (!loadMore) {
+      _controller.refreshCompleted();
+    }else {
+      _controller.loadComplete();
     }
   }
 
