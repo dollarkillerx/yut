@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:yut/common/utils/view_util.dart';
 import 'package:yut/http/request/base_request.dart';
 import '../common/entity/video.dart';
@@ -140,4 +139,43 @@ class VideoCard extends StatelessWidget {
       ],
     );
   }
+}
+
+class VideoCard2 extends StatelessWidget {
+  final VideoItem videoMo;
+
+  const VideoCard2({Key? key, required this.videoMo}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        print("click: ${videoMo.title}");
+      },
+      child: Card(
+        margin: EdgeInsets.only(left: 4, right: 4, bottom: 8),
+        child:  Column(
+          children: [
+            Container(
+              child: cachedImage("https://ggapi.mechat.live/api/v1/asset/${videoMo.img}?token=${LoginDao.getBoardingPass()}"),
+              margin: EdgeInsets.all(10),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage('images/head_right.png'),
+              ),
+              title: Text(videoMo.channelTitle!),
+              subtitle: Text(
+                videoMo.title!,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }

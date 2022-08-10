@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:yut/common/entity/banner.dart';
+import 'package:yut/common/utils/view_util.dart';
 import 'package:yut/core/hi_state.dart';
 import 'package:yut/widget/hi_banner.dart';
 import '../common/entity/video.dart';
 import '../common/logs/logs.dart';
 import '../common/utils/toast.dart';
+import '../http/dao/login.dart';
 import '../http/dao/tops.dart';
 import '../http/request/base_request.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -80,7 +82,7 @@ class _HomeTabPageState extends HiState<HomeTabPage>
               onRefresh: (){_loadData(loadMore: true);},
               onLoading: (){_loadData();},
               controller: _controller,
-              child: _showB(),
+              child: _showC(),
           ),
         ),
       );
@@ -171,24 +173,37 @@ class _HomeTabPageState extends HiState<HomeTabPage>
     );
   }
 
-  // _showC() {
-  //   return ListView(
-  //     /// 滚动控制器实现瀑布流
-  //     // controller: _scrollController,
-  //     /// 默认行为是，当列表高度不足以占满屏幕的时候，下拉刷新和瀑布流均失效
-  //     /// 所以这里应该设置  始终允许刷新
-  //     physics: const AlwaysScrollableScrollPhysics(),
-  //     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-  //     children: [
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+  _showC() {
+      return ListView.builder(
+          padding: EdgeInsets.all(10),
+          shrinkWrap: true,
+          itemCount: videoList?.length,
+          itemBuilder: (context, index) {
+            return VideoCard2(videoMo: videoList![index]);
+            // return ListTile(
+            //   title: Image.network(
+            //       "https://ggapi.mechat.live/api/v1/asset/${videoList![index].img}?token=${LoginDao.getBoardingPass()}"),
+            //   subtitle: Text(videoList![index].title!),
+            // );
+          });
+
+    // return ListView(
+    //   /// 滚动控制器实现瀑布流
+    //   // controller: _scrollController,
+    //   /// 默认行为是，当列表高度不足以占满屏幕的时候，下拉刷新和瀑布流均失效
+    //   /// 所以这里应该设置  始终允许刷新
+    //   // physics: const AlwaysScrollableScrollPhysics(),
+    //   padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+    //   children: [
+    //     Row(
+    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //       children: [
+    //
+    //       ],
+    //     ),
+    //   ],
+    // );
+  }
 
   _showVideo() {
     if (videoList != null) {
