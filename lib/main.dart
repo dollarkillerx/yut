@@ -22,20 +22,20 @@ class BiliApp extends StatefulWidget {
 }
 
 class _BiliAppState extends State<BiliApp> {
-  BiliRouteDelegate _routerDelegate = BiliRouteDelegate();
+  BiliRouteDelegate _routeDelegate = BiliRouteDelegate();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<HiCache>(future: () async {
       return await HiCache.preInit();
     }(), builder: (BuildContext context, AsyncSnapshot<HiCache> snapshot) {
+      //定义route
       var widget = snapshot.connectionState == ConnectionState.done
-          ? Router(routerDelegate: _routerDelegate)
+          ? Router(routerDelegate: _routeDelegate)
           : Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+        body: Center(child: CircularProgressIndicator()),
+      );
+
       return MaterialApp(
         home: widget,
         theme: ThemeData(primarySwatch: white),
@@ -54,13 +54,16 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
     HiNavigator.getInstance()
         .registerRouteJump(RouteJumpListener((routeStatus, {args}) {
       _routeStatus = routeStatus;
+      if (routeStatus == RouteStatus.detail) {
+        this.videoModel = args!['videoMo'];
+      }
       notifyListeners();
     }));
   }
 
   // 存放所有的頁面
   List<Page<dynamic>> pages = [];
-  VideoModel? videoModel;
+  VideoItem? videoModel;
   late BiliRoutePath path;
   RouteStatus _routeStatus = RouteStatus.home;
 

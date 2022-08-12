@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yut/common/utils/view_util.dart';
 import 'package:yut/http/request/base_request.dart';
 import '../common/entity/video.dart';
+import '../common/navigator/hi_navigator.dart';
 import '../http/dao/login.dart';
 
 class VideoCard extends StatelessWidget {
@@ -14,6 +15,8 @@ class VideoCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         print("click: ${videoMo.title}");
+        HiNavigator.getInstance()
+            .onJumpTo(RouteStatus.detail, args: {"videoMo": videoMo});
       },
       child: SizedBox(
         height: 200,

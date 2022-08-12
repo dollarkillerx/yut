@@ -4,6 +4,7 @@ import 'package:yut/common/color/color.dart';
 import 'package:yut/common/navigator/hi_navigator.dart';
 import 'package:yut/core/hi_state.dart';
 import 'package:yut/page/home_tab.dart';
+import 'package:yut/widget/loading.dart';
 import '../common/entity/tops.dart';
 import '../common/logs/logs.dart';
 import '../common/utils/toast.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends HiState<HomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late RouteChangeListener listener;
   List<TopsItem> tabs = [];
-  late TabController _tabController;
+  TabController? _tabController;
   var isLoad = true;
 
   @override
@@ -42,9 +43,7 @@ class _HomePageState extends HiState<HomePage>
     //   }
     // });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
+    _asyncMethod();
   }
 
   _asyncMethod() async {
@@ -62,6 +61,7 @@ class _HomePageState extends HiState<HomePage>
           length: tabs.length,
           vsync: this,
         );
+
         isLoad = false;
       });
     } catch (e) {
@@ -116,38 +116,65 @@ class _HomePageState extends HiState<HomePage>
   }
 
   _view() {
-    if (isLoad) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: Colors.cyan,
+    return LoadingContainer(
+      child: Column(
+      children: [
+        MyNavigationBar(
+          height: 50,
+          child: _appBar(),
+          color: Colors.white,
+          statusStyle: StatusStyle.DARK_CONTENT,
         ),
-      );
-    } else {
-      return Column(
-        children: [
-          MyNavigationBar(
-            height: 50,
-            child: _appBar(),
-            color: Colors.white,
-            statusStyle: StatusStyle.DARK_CONTENT,
-          ),
-          Container(
-            color: Colors.white,
-            child: _tabBar(),
-          ),
-          Flexible(
-              child: TabBarView(
-            controller: _tabController,
-            children: tabs.map((e) {
-              return HomeTabPage(
-                name: e.name!,
-                topic: e.key!,
-              );
-            }).toList(),
-          ))
-        ],
-      );
-    }
+        Container(
+          color: Colors.white,
+          child: _tabBar(),
+        ),
+        Flexible(
+            child: TabBarView(
+              controller: _tabController,
+              children: tabs.map((e) {
+                return HomeTabPage(
+                  name: e.name!,
+                  topic: e.key!,
+                );
+              }).toList(),
+            ))
+      ],
+    ),
+      isLoading: this.isLoad,);
+
+    // if (isLoad) {
+    //   return Center(
+    //     child: CircularProgressIndicator(
+    //       color: Colors.cyan,
+    //     ),
+    //   );
+    // } else {
+    //   return Column(
+    //     children: [
+    //       MyNavigationBar(
+    //         height: 50,
+    //         child: _appBar(),
+    //         color: Colors.white,
+    //         statusStyle: StatusStyle.DARK_CONTENT,
+    //       ),
+    //       Container(
+    //         color: Colors.white,
+    //         child: _tabBar(),
+    //       ),
+    //       Flexible(
+    //           child: TabBarView(
+    //         controller: _tabController,
+    //         children: tabs.map((e) {
+    //           return HomeTabPage(
+    //             name: e.name!,
+    //             topic: e.key!,
+    //           );
+    //         }).toList(),
+    //       ))
+    //     ],
+    //   );
+    // }
   }
 
   _appBar() {
